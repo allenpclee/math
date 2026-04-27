@@ -2,7 +2,7 @@
 # the e^(ix) is always on the unit circle
 # The derivative of e^(ix) is the velocity vector of the point on the unit circle
 # it always points to the direction perpendicular to the position vector
-
+# Final equation = e^(iπ) + 1 = 0
 import math
 import numpy as np
 import matplotlib.pyplot as plt
