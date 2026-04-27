@@ -18,12 +18,24 @@ for a in number_list:
                 # (a^2 + b^2)(c^2 + d^2)
                 length_multiply = (a**2+b**2)*(c**2+d**2)
                 two_vector_length_multiply.append(length_multiply)
-                # (ad + bc)^2
+                
+                # (ad + bc)^2 (Imaginary part squared)
                 img_part = (a*d+b*c)**2
                 img_part_in_final_vector.append(img_part)
-                #print(f"{(a,b,c,d)}: (a^2 + b^2)(c^2 + d^2) = {length_multiply}, (ad + bc)^2 = {img_part}, {length_multiply>=img_part}")
-
                 
+                # (ac - bd)^2 (Real part squared)
+                real_part = (a*c-b*d)**2
+                
+                # PROGRAMMATIC PROOF:
+                # Brahmagupta-Fibonacci identity / Complex number modulus property:
+                # |z1|^2 * |z2|^2 = |z1 * z2|^2 = Re(z1*z2)^2 + Im(z1*z2)^2
+                # Because real_part >= 0, it proves that length_multiply >= img_part.
+                assert length_multiply == real_part + img_part
+
+print("Inequality mathematically and computationally proven for all combinations!")
+print("For every (a,b,c,d): (a² + b²)(c² + d²) = (ac - bd)² + (ad + bc)²")
+print(f"Successfully verified {len(two_vector_numbers)} combinations using assertion.")
+
 
 # Plotting the results
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
@@ -40,13 +52,14 @@ ax1.legend()
 ax1.grid(True, linestyle=':', alpha=0.7)
 
 # Subplot 2: Difference Plot
-# Showing the difference always >= 0
+# The difference between LHS and RHS is exactly the real part squared: (ac - bd)^2
+# Since any real number squared is >= 0, LHS - RHS >= 0 is mathematically proven.
 differences = [L - R for L, R in zip(two_vector_length_multiply, img_part_in_final_vector)]
-ax2.plot(range(len(differences)), differences, color='purple', alpha=0.7)
+ax2.plot(range(len(differences)), differences, color='purple', alpha=0.7, label='LHS - RHS = (ac - bd)²')
 ax2.axhline(0, color='red', linestyle='--', label='Difference = 0')
 ax2.set_xlabel('Index of Combination (a, b, c, d)')
 ax2.set_ylabel('Difference: LHS - RHS')
-ax2.set_title('Difference Plot: LHS - RHS >= 0')
+ax2.set_title('Difference = (ac - bd)² ≥ 0')
 ax2.legend()
 ax2.grid(True, linestyle=':', alpha=0.7)
 
