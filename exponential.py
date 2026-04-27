@@ -1,4 +1,4 @@
-import math
+# show the result of natural exponential history, how the calculation of e was done
 from decimal import Decimal, getcontext
 import sympy
 import numpy as np

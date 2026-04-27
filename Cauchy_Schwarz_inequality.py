@@ -1,3 +1,4 @@
+# Visualize Cauchy-Schwarz Inequality for two vectors
 import matplotlib.pyplot as plt
 
 number_list = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]
@@ -20,24 +21,35 @@ for a in number_list:
                 # (ad + bc)^2
                 img_part = (a*d+b*c)**2
                 img_part_in_final_vector.append(img_part)
-                print(f"{(a,b,c,d)}: (a^2 + b^2)(c^2 + d^2) = {length_multiply}, (ad + bc)^2 = {img_part}, {length_multiply>=img_part}")
+                #print(f"{(a,b,c,d)}: (a^2 + b^2)(c^2 + d^2) = {length_multiply}, (ad + bc)^2 = {img_part}, {length_multiply>=img_part}")
 
                 
 
 # Plotting the results
-plt.figure(figsize=(12, 6))
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
 
-x = range(len(two_vector_length_multiply))
-plt.plot(x, two_vector_length_multiply, label="(a^2 + b^2)(c^2 + d^2)", color="blue", alpha=0.7)
-plt.plot(x, img_part_in_final_vector, label="(ad + bc)^2", color="red", alpha=0.7)
+# Subplot 1: Scatter plot of both sides
+# A scatter plot makes it obvious that all points fall below the line of equality
+ax1.scatter(two_vector_length_multiply, img_part_in_final_vector, color='blue', alpha=0.5, edgecolors='none')
+max_val = max(max(two_vector_length_multiply), max(img_part_in_final_vector))
+ax1.plot([0, max_val], [0, max_val], color='red', linestyle='--', label='y = x (Equality)')
+ax1.set_xlabel('LHS: (a^2 + b^2)(c^2 + d^2)')
+ax1.set_ylabel('RHS: (ad + bc)^2')
+ax1.set_title('Scatter Plot: RHS <= LHS')
+ax1.legend()
+ax1.grid(True, linestyle=':', alpha=0.7)
 
-# Since there are many elements (14,641), we will only show a subset of ticks on the x-axis
-step = max(1, len(x) // 10)
-plt.xticks(x[::step], [str(two_vector_numbers[i]) for i in x[::step]], rotation=45)
+# Subplot 2: Difference Plot
+# Showing the difference always >= 0
+differences = [L - R for L, R in zip(two_vector_length_multiply, img_part_in_final_vector)]
+ax2.plot(range(len(differences)), differences, color='purple', alpha=0.7)
+ax2.axhline(0, color='red', linestyle='--', label='Difference = 0')
+ax2.set_xlabel('Index of Combination (a, b, c, d)')
+ax2.set_ylabel('Difference: LHS - RHS')
+ax2.set_title('Difference Plot: LHS - RHS >= 0')
+ax2.legend()
+ax2.grid(True, linestyle=':', alpha=0.7)
 
-plt.xlabel("Elements in two_vector_numbers (a, b, c, d)")
-plt.ylabel("Values")
-plt.title("Cauchy-Schwarz Inequality Verification")
-plt.legend()
+plt.suptitle("Visualizing Cauchy-Schwarz Inequality", fontsize=16)
 plt.tight_layout()
 plt.show()

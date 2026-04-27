@@ -1,3 +1,6 @@
+# show how the Huygens used the area of y=1/x to find the value of e
+# The area under the curve of y=1/x from 1 to x is ln(x)
+# When the area is 1, the value of x is e
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, TextBox
