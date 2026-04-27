@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Euler's Formula Animation</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --panel-bg: rgba(30, 41, 59, 0.7);
+            --text-color: #f8fafc;
+            --accent: #3b82f6;
+            --danger: #ef4444;
+            --success: #22c55e;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', -apple-system, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            margin: 0 0 10px 0;
+            font-weight: 600;
+            background: linear-gradient(to right, #60a5fa, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .container {
+            display: flex;
+            gap: 20px;
+            background: var(--panel-bg);
+            padding: 20px;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        canvas {
+            background: #1e293b;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .controls {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            background: var(--panel-bg);
+            padding: 15px 30px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .x-display {
+            font-family: monospace;
+            font-size: 1.2rem;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 16px;
+            border-radius: 8px;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        button {
+            border: none;
+            padding: 10px 24px;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: white;
+        }
+
+        #startBtn {
+            background-color: var(--success);
+        }
+        #startBtn:hover {
+            background-color: #16a34a;
+            transform: scale(1.05);
+        }
+
+        #stopBtn {
+            background-color: var(--danger);
+        }
+        #stopBtn:hover {
+            background-color: #dc2626;
+            transform: scale(1.05);
+        }
+
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+        
+        input[type=range] {
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Animation of f(x) = e^(ix)</h1>
+        <p>High-performance HTML5 Canvas rendering</p>
+    </div>
+
+    <div class="container">
+        <!-- Canvas 1: Complex Plane -->
+        <canvas id="complexCanvas" width="400" height="400"></canvas>
+        
+        <!-- Canvas 2: Sine Wave -->
+        <canvas id="sineCanvas" width="600" height="400"></canvas>
+    </div>
+
+    <div class="controls">
+        <div class="x-display" id="xDisplay">x = 0.00</div>
+        
+        <div class="speed-control">
+            <label for="speedSlider">Speed: <span id="speedVal">1.0</span>x</label>
+            <input type="range" id="speedSlider" min="0.5" max="2.0" step="0.1" value="1.0">
+        </div>
+        
+        <button id="startBtn">Pause</button>
+        <button id="stopBtn">Stop & Reset</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
