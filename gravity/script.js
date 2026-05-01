@@ -1,7 +1,6 @@
 const canvas = document.getElementById('simCanvas');
 const ctx = canvas.getContext('2d');
 const speedInput = document.getElementById('speedInput');
-const angleInput = document.getElementById('angleInput');
 const gravityInput = document.getElementById('gravityInput');
 const heightInput = document.getElementById('heightInput');
 const timeWarpInput = document.getElementById('timeWarpInput');
@@ -72,7 +71,7 @@ orbitSpeedBtn.addEventListener('click', () => {
     let v_kmh = v_ms * 3.6;
     
     speedInput.value = v_kmh.toFixed(0);
-    angleInput.value = "0"; 
+    updateDynamicEquations();
 });
 
 const escapeSpeedBtn = document.getElementById('escapeSpeedBtn');
@@ -86,8 +85,84 @@ escapeSpeedBtn.addEventListener('click', () => {
     let v_kmh = v_ms * 3.6;
     
     speedInput.value = v_kmh.toFixed(0);
-    angleInput.value = "0"; 
+    updateDynamicEquations();
 });
+
+function updateDynamicEquations() {
+    let current_g = parseFloat(gravityInput.value) || 9.81;
+    let current_h_m = (parseFloat(heightInput.value) || 0) * 1000;
+    let r0 = R_p + current_h_m;
+    let v_kmh = parseFloat(speedInput.value) || 0;
+    let v_ms = v_kmh / 3.6;
+
+    let mu = current_g * R_p * R_p;
+    let v_o = Math.sqrt(mu / r0);
+    let v_e = Math.sqrt(2 * mu / r0);
+
+    let html = "";
+    let epsilon = 1.0; 
+    
+    if (v_ms >= v_e) {
+        // 4. nothing to show if it escapes
+        html = "";
+    } else if (Math.abs(v_ms - v_o) < epsilon) {
+        // 2. Circular orbit equation from center
+        html = `
+            <div style="color: #4ade80; font-weight: 600; margin-bottom: 5px;">Trajectory: Circular Orbit</div>
+            <div><strong>Cartesian Equation:</strong> x&sup2; + y&sup2; = r&sup2;</div>
+            <div style="font-size: 12px; margin-top: 5px; color: var(--text-secondary);">
+                <em>r</em> = orbit radius = ${(r0/1000).toFixed(0)} km
+            </div>
+        `;
+    } else {
+        let p = (r0 * r0 * v_ms * v_ms) / mu;
+        let e = (v_ms > v_o) ? ((p / r0) - 1) : (1 - (p / r0));
+        let r_p = p / (1 + e);
+
+        if (r_p > R_p) {
+            // 3. Oval (Elliptical) orbit equation from center
+            let a = p / (1 - e*e);
+            let b = a * Math.sqrt(1 - e*e);
+            html = `
+                <div style="color: #38bdf8; font-weight: 600; margin-bottom: 5px;">Trajectory: Elliptical Orbit (Oval)</div>
+                <div><strong>Cartesian Equation:</strong> x&sup2; / a&sup2; + y&sup2; / b&sup2; = 1</div>
+                <div style="font-size: 12px; margin-top: 5px; color: var(--text-secondary);">
+                    <em>a</em> = semi-major axis = ${(a/1000).toFixed(0)} km<br>
+                    <em>b</em> = semi-minor axis = ${(b/1000).toFixed(0)} km
+                </div>
+            `;
+        } else {
+            // 1. Sub-orbital (Impact) distance equation and variable explanation
+            let cosTheta = (1 - p / R_p) / e;
+            let d_km = 0;
+            if (cosTheta >= -1 && cosTheta <= 1) {
+                let theta = Math.acos(cosTheta);
+                d_km = (R_p * theta) / 1000;
+            }
+            html = `
+                <div style="color: #fbbf24; font-weight: 600; margin-bottom: 5px;">Trajectory: Sub-orbital (Impact)</div>
+                <div><strong>Impact Dist (d):</strong> R<sub>e</sub> &times; arccos[(1 - p/R<sub>e</sub>)/e]</div>
+                <div style="font-size: 12px; margin-top: 5px; color: var(--text-secondary); line-height: 1.4;">
+                    <em>arccos</em> = inverse cosine trigonometric function<br>
+                    <em>p</em> = orbital parameter = ${(p/1000).toFixed(0)} km<br>
+                    <em>e</em> = orbit eccentricity = ${e.toFixed(3)}
+                </div>
+                <div style="margin-top: 5px; color: var(--text-primary);"><strong>d &approx; ${d_km.toFixed(2)} km</strong></div>
+            `;
+        }
+    }
+
+    const container = document.getElementById('dynamicEquationContainer');
+    const hr = document.getElementById('dynamicEquationDivider');
+    if (container) {
+        container.innerHTML = html;
+        if (hr) hr.style.display = html === "" ? 'none' : 'block';
+    }
+}
+
+speedInput.addEventListener('input', updateDynamicEquations);
+heightInput.addEventListener('input', updateDynamicEquations);
+gravityInput.addEventListener('input', updateDynamicEquations);
 
 function worldToCanvas(worldX, worldY) {
     return {
@@ -316,7 +391,6 @@ function startAnimation() {
     outOfBoundsAlert.classList.add('hidden');
     
     let speed_kmh = parseFloat(speedInput.value);
-    let angle_deg = parseFloat(angleInput.value);
     g = parseFloat(gravityInput.value);
     h0_m = parseFloat(heightInput.value) * 1000;
 
@@ -324,7 +398,7 @@ function startAnimation() {
     if (g <= 0) g = 0.1;
 
     let v0 = speed_kmh / 3.6;
-    let theta_rad = angle_deg * Math.PI / 180;
+    let theta_rad = 0; // Forced to 0 degrees for horizontal orbit throws
 
     px = 0;
     py = R_p + h0_m;
@@ -367,3 +441,4 @@ resetBtn.addEventListener('click', resetAnimation);
 // Initialization
 resizeCanvas();
 resetAnimation();
+updateDynamicEquations();

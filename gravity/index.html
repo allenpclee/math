@@ -23,6 +23,10 @@
                 <div><strong>Gravity accel (a):</strong> g &times; (R<sub>earth</sub> / r)&sup2;</div>
                 <div><strong>Orbit Speed (v<sub>o</sub>):</strong> &radic;(g &times; R<sub>earth</sub>&sup2; / r)</div>
                 <div><strong>Escape Speed (v<sub>e</sub>):</strong> &radic;(2 &times; g &times; R<sub>earth</sub>&sup2; / r)</div>
+                <hr id="dynamicEquationDivider" style="border: 0; border-top: 1px solid var(--panel-border); margin: 12px 0;">
+                <div id="dynamicEquationContainer">
+                    <!-- Dynamic content injected by JS -->
+                </div>
             </div>
 
             <!-- Alert for out-of-bounds -->
@@ -50,13 +54,7 @@
                 </div>
             </div>
 
-            <div class="control-group">
-                <label for="angleInput">Throw Angle (°)</label>
-                <div class="input-wrapper">
-                    <input type="number" id="angleInput" value="45" min="0" max="90" step="1">
-                    <span class="unit">deg</span>
-                </div>
-            </div>
+
 
             <div class="control-group">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
